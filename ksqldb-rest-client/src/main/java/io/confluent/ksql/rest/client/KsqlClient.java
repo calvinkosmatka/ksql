@@ -32,8 +32,10 @@ import io.vertx.core.net.JksOptions;
 import io.vertx.core.net.SocketAddress;
 import java.net.URI;
 import java.nio.charset.StandardCharsets;
+import java.util.Arrays;
 import java.util.Base64;
 import java.util.Collections;
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
@@ -177,8 +179,11 @@ public final class KsqlClient implements AutoCloseable {
       final Map<String, String> clientProps,
       final HttpClientOptions httpClientOptions,
       final boolean tls) {
+    final List<HttpVersion> alpnVersions = Arrays.asList(HttpVersion.HTTP_2, HttpVersion.HTTP_1_1);
     if (tls) {
       httpClientOptions.setSsl(true);
+      httpClientOptions.setUseAlpn(true);
+      httpClientOptions.setAlpnVersions(alpnVersions);
 
       configureHostVerification(clientProps, httpClientOptions);
 
